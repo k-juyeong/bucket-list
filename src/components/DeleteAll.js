@@ -1,6 +1,8 @@
 import React from "react";
 import styled from "styled-components/native";
 import { TouchableOpacity } from "react-native";
+import PropTypes from 'prop-types';
+import LineButton from "./LineButton";
 
 const StyledDeleteAll = styled.Text`
     font-size: 30px;
@@ -15,12 +17,22 @@ const StyledDeleteAll = styled.Text`
     background-color: darkslategrey;
 `
 
-const DeleteAll = ({deleteAllBucket}) => {
+const DeleteAll = ({text, onPressOut}) => {
     return (
-        <TouchableOpacity onPressOut={deleteAllBucket}>
-            <StyledDeleteAll>Delete All</StyledDeleteAll>
+        <TouchableOpacity onPressOut={onPressOut}>
+            <StyledDeleteAll>{text}</StyledDeleteAll>
         </TouchableOpacity>
     )
+}
+
+LineButton.defaultProps = {
+    text: '임시',
+    onPressOut: () => {}
+}
+
+LineButton.propTypes = {
+    text: PropTypes.string.isRequired,
+    onPressOut: PropTypes.func.isRequired,
 }
 
 export default DeleteAll;

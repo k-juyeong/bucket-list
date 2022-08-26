@@ -1,9 +1,9 @@
 import { StatusBar } from 'react-native';
-import { StyleSheet, Text, View, Alert } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import styled, {ThemeProvider} from 'styled-components/native';
 import {theme} from './theme'
 import Input from './components/Input';
-import React, {useRef, useState} from 'react';
+import React, {useState} from 'react';
 import { Dimensions } from 'react-native';
 import IconButton from './components/IconButton';
 import {images} from './images';
@@ -38,10 +38,9 @@ const List = styled.ScrollView`
 export default function App() {
   const width = Dimensions.get('window').width;
 
-  const [isReady, setIsReady] = useState(false); // 앱실행 준비상태
-  const [newList, setNewList] = useState('');    // 새로운 항목
-  const [lists, setLists] = useState({});        // 
-  // const refInput = useRef(null)
+  const [isReady, setIsReady] = useState(false);
+  const [newList, setNewList] = useState('');
+  const [lists, setLists] = useState({});
 
   // 데이터 저장
   const _saveLists = async lists => {
@@ -68,7 +67,6 @@ export default function App() {
     setNewList('');
     // setLists({...lists, ...newBucketObject});
     _saveLists({...lists, ...currentBuckets});
-    // refInput.current.focus();
   }
 
   // 작성 중
@@ -84,39 +82,14 @@ export default function App() {
     _saveLists(currentBuckets);
   }
 
-  // 완료항목 전체 삭제
-  const _deleteAllBucketList = () => {
-
-    const deleteCompletedItems = ()=>{
-      const currentBuckets = {...lists};
-      const filteredBuckets = 
-        Object.fromEntries(Object.entries(currentBuckets)
-                                .filter(list=> list[1].completed === false))
-      _saveLists(filteredBuckets);
-    }
-
-    Alert.alert(
-      "삭제",               // 경고창 제목
-      "완료항목 전체를 삭제하시겠습니까?",   //경고창 메세지
-      [
-        {
-          text: "예",
-          onPress: () => deleteCompletedItems(),
-        },
-        {
-          text: "아니오",
-          onPress: () => console.log("OK Pressed")
-        }
-      ]
-    );
-
+  // 전체 삭제
+  const _deleteAllBucketList = lists => {
     // const currentBuckets = {...lists};
-    // for(let currentBucket in currentBuckets){
-    //   if (currentBucket.completed) {
-    //     delete currentBuckets[currentBucket.id];
-    //   }
-    // }
-    // _saveLists(currentBuckets);
+    // currentBuckets.map(list=>console.log(list.completed));
+    Object.values(lists).forEach(list=>
+      list.completed ? console.log(false) : console.log(true)
+    )
+    // setLists(currentBuckets);
   }
   
 
@@ -141,7 +114,6 @@ export default function App() {
   const _onBlur = () => {
     setNewList('');
   }
-
   return isReady? (
   <ThemeProvider theme={theme}>
       <Container>
@@ -153,7 +125,6 @@ export default function App() {
           onChangeText={_handleTextChange}
           onSubmitEditing={_addBucketList}
           onBlur={_onBlur}
-          // refInput={refInput}
         />
         <List width={width}>
           {Object.values(lists)
@@ -169,10 +140,7 @@ export default function App() {
             ))
           }
         </List>
-        <DeleteAll
-          text='완료항목 전체삭제'
-          onPressOut={_deleteAllBucketList}
-        />
+        <DeleteAll deleteAllBucket={_deleteAllBucketList} />
       </Container>
     </ThemeProvider>
   ) : (
