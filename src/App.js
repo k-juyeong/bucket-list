@@ -86,14 +86,24 @@ export default function App() {
 
   // 완료항목 전체 삭제
   const _deleteAllBucketList = () => {
+    
+    const currentBuckets = {...lists};
+    
+    const completedBucketLists = 
+      Object.entries(currentBuckets)
+            .filter(list=>list[1].completed === true);
+
+    // 완료 항목이 없는 경우 확인창 띄우지 않음
+    if (completedBucketLists.length < 1) return;
+
 
     const deleteCompletedItems = ()=>{
-      const currentBuckets = {...lists};
       const filteredBuckets = 
         Object.fromEntries(Object.entries(currentBuckets)
                                 .filter(list=> list[1].completed === false))
       _saveLists(filteredBuckets);
     }
+
 
     Alert.alert(
       "삭제",               // 경고창 제목
